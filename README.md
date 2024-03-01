@@ -17,7 +17,7 @@ The file `sqlExamples.txt` is just a collection of example SQL querys ripped fro
 
 ## Installation
 
-Click on the link for the script above. When the PowerShell code page appears click the **Download Raw file** button top right. Copy the `include` folder to your computer. This script and the `include` folder must be in the same folder on your computer.
+Click on the `cucmsqlquery.ps1` link for the script above. When the PowerShell code page appears click the **Download Raw file** button top right. Copy the `include` folder to your computer. This script and the `include` folder must be in the same folder on your computer.
 
 Download the `AXL Toolkit plugin` from your version of CUCM. This will also need to be unzipped and saved to the same folder as this script. You can access the toolkit by browsing to `Application->Plugin` on CUCM administration web page.
 
