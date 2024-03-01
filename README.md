@@ -10,7 +10,7 @@ admin: run sql select lastname, userid from enduser limit 2
 ```
 Once the query completes click `File->Save As`, to save the result.
 
-The file `examples.xml` is just a collection of example SQL querys ripped from the internet.
+The file `sqlExamples.txt` is just a collection of example SQL querys ripped from the internet.
 ### Screenshot
 
 ![Figure 1 - CUCM SQL Query screen shot](/./cucmsqlquery.png "PowerShell Script screenshot")
