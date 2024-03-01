@@ -26,7 +26,7 @@ The system this script was developed on was `Windows Server 2016`, the PowerShel
 Once installed open the script in your prefered text editor. Find each line that has the comment text `CHANGE FOR YOUR ENVIROMENT` in it. Alter these lines to match your enviroment.
 ## Usage
 
-To execute the PowerShell scripts in this repository. Save the ps1 file and include folder to a folder on your computer (along with the unzipped AXL toolkit), then from a powershell prompt in the same folder.
+To execute. Save the ps1 file and include folder to a folder on your computer (along with the unzipped AXL toolkit), then from a powershell prompt in the same folder.
 ```sh
 Run .\cucmsqlquery.ps1 
 ```
