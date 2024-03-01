@@ -4,7 +4,7 @@ This PowerShell script will send a SQL query to CUCM over HTTPS. It uses the AXL
 
 You will need to alter the script variable `$global:cucmUrl` to equal the IP address or FQDN of your CUCM server. If your enterprise has a functioning PKI you will probably want to use the FQDN. You may also want to remove the `trust_all_policy` include line from the script. You only need this if you are using self signed certificates.
 
-This script is slightly better than SSHing to your CUCM server and issuing the SQL CLI command, as it lets you save the SQL results table to a CSV on your local computer. For example.
+This script is slightly better than SSHing to your CUCM server and issuing the SQL CLI command, as it lets you save the SQL results table to a CSV on your local computer. For example the equivelent SQL query from the screen shot, but on the CUCM CLI.
 ```sh
 admin: run sql select lastname, userid from enduser limit 2 
 ```
