@@ -1,0 +1,26 @@
+# Which end users are logged into which Hunt groups. This works for extension mobility.
+# shows TRUE (t) or FALSE (f) for logged in. Taken from 'joekarter' post on Cisco forum
+# https://community.cisco.com/t5/ip-telephony-and-phones/how-to-show-logged-in-line-group-members-in-a-hunt-pilot-cucm-v7/td-p/1548257/page/2
+
+SELECT lg.name AS LineGroup,n.dnorpattern,dhd.hlog FROM
+linegroup AS lg INNER JOIN
+linegroupnumplanmap AS lgmap ON lgmap.fklinegroup=lg.pkid INNER JOIN
+numplan AS n ON lgmap.fknumplan = n.pkid INNER JOIN
+devicenumplanmap AS dmap ON dmap.fknumplan=n.pkid INNER JOIN
+device AS dp ON dmap.fkdevice=dp.pkid INNER JOIN
+extensionmobilitydynamic AS emd ON emd.fkdevice_currentloginprofile = dp.pkid INNER JOIN
+device AS d ON emd.fkdevice=d.pkid INNER JOIN
+devicehlogdynamic AS dhd on dhd.fkdevice=d.pkid
+ORDER BY lg.name
+
+# Similiar to the above query but no extension mobilty. Taken from UCGuerrilla, some
+# excelent examples and tutorial here
+# http://www.ucguerrilla.com/2012/03/cucm-sql-queries-series.html
+
+SELECT lg.name AS LineGroup, n.dnorpattern, dhd.hlog FROM linegroup AS lg 
+INNER JOIN linegroupnumplanmap AS lgmap ON lgmap.fklinegroup=lg.pkid
+INNER JOIN  numplan AS n ON lgmap.fknumplan = n.pkid
+INNER JOIN devicenumplanmap AS dmap ON dmap.fknumplan=n.pkid
+INNER JOIN  device AS d ON dmap.fkdevice=d.pkid
+INNER JOIN devicehlogdynamic AS dhd ON dhd.fkdevice=d.pkid
+ORDER BY lg.name
