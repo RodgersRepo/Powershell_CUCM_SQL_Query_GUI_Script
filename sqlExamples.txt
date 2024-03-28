@@ -24,3 +24,16 @@ INNER JOIN devicenumplanmap AS dmap ON dmap.fknumplan=n.pkid
 INNER JOIN  device AS d ON dmap.fkdevice=d.pkid
 INNER JOIN devicehlogdynamic AS dhd ON dhd.fkdevice=d.pkid
 ORDER BY lg.name
+
+# Certificate queries taken from the cisco documents
+# https://www.cisco.com.mcas.ms/c/en/us/support/docs/unified-communications/unified-communications-manager-callmanager/210541-CUCM-Certificate-Management-and-Change-N.html
+SELECT *
+FROM TYPECERTIFICATESERVICE
+
+# Certs but detailed
+SELECT CERTIFICATE.pkid, CERTIFICATE.serialnumber, CERTIFICATEPROCESSNODEMAP.ipv4address, CERTIFICATEPROCESSNODEMAP.servername, TYPECERTIFICATESERVICE.name, subjectname from CERTIFICATEPROCESSNODEMAP
+INNER JOIN CERTIFICATE ON CERTIFICATEPROCESSNODEMAP.fkcertificate=CERTIFICATE.pkid
+INNER JOIN CERTIFICATESERVICECERTIFICATEMAP ON CERTIFICATESERVICECERTIFICATEMAP.fkcertificate=CERTIFICATE.pkid
+JOIN TYPECERTIFICATESERVICE ON TYPECERTIFICATESERVICE.enum=CERTIFICATESERVICECERTIFICATEMAP.tkcertificateservice
+ORDER BY CERTIFICATEPROCESSNODEMAP.servername
+
