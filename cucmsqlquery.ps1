@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
   Name: cucmsqlquery.ps1
   Will send a SQL query to the CUCM Administrative XML service (AXL)
@@ -36,7 +36,8 @@ Copyright (C) 2024  Rodge Industries 2000
     Last Updated:      
    
     Change comments:
-    Initial realease V1 - RITT    
+    Initial realease V1 - RITT
+    Now does SQL update V1.1 - RITT 05/04/2024    
    
   Author: RodgeIndustries2000 (RITT)
        
@@ -67,7 +68,6 @@ $syncHashTable.asyncObject = $null                                  # Assign the
 
 
 Add-Type -AssemblyName presentationframework, presentationcore      # Add these assemblys
-# CHANGE FOR YOUR ENVIROMENT
 # Import dotNET class to accept server certs but dont validate
 #[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 # I think a better way than the above is to include dot net core class
@@ -90,7 +90,7 @@ Add-Type -AssemblyName presentationframework, presentationcore      # Add these 
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Name="queryMainAppGUI"
-        Title="SQL Query CUCM AXL database - Version 1.0" Height="900" Width="1000"
+        Title="SQL Query CUCM AXL database - Version 1.1" Height="900" Width="1000"
         FontSize="17" FontFamily="Segoe UI">
 
    <Window.Resources> <!--Match name with the root element in this case Window-->
@@ -113,6 +113,45 @@ Add-Type -AssemblyName presentationframework, presentationcore      # Add these 
         <Style TargetType="PasswordBox">
          <Setter Property="Background" Value="#FFB8B8B8" />
          <Setter Property="Height" Value="32" />
+        </Style>
+        <!-- Toggle button from https://stackoverflow.com/questions/74770662/powershell-xaml-ios-style-on-off-button -->
+        <Style TargetType="ToggleButton">
+	     <Setter Property="Template">
+		  <Setter.Value>
+		   <ControlTemplate TargetType="ToggleButton">
+			<Viewbox>
+			 <Border Name="Border" CornerRadius="10" Background="#FFFFFFFF" Width="40" Height="20">
+			   <Border.Effect>
+			    <DropShadowEffect ShadowDepth="0.5" Direction="0" Opacity="0.3" />
+			   </Border.Effect>
+			  <Ellipse Name="Ellipse" Fill="#FFFFFFFF" Stretch="Uniform" Margin="2 1 2 1" Stroke="Gray" StrokeThickness="0.2" HorizontalAlignment="Stretch">
+			   <Ellipse.Effect>
+			    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.3" Direction="260" />
+			   </Ellipse.Effect>
+			  </Ellipse>
+			 </Border>
+			</Viewbox>
+			<ControlTemplate.Triggers>
+			 <EventTrigger RoutedEvent="Checked">
+			  <BeginStoryboard>
+				<Storyboard>
+				 <ColorAnimation Name="toggleCheckedAni" Storyboard.TargetName="Border" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FFEB4034" Duration="0:0:0.1" />
+				 <ThicknessAnimation Name="toggleCheckedAniThi" Storyboard.TargetName="Ellipse" Storyboard.TargetProperty="Margin" To="20 1 2 1" Duration="0:0:0.1" />
+				</Storyboard>
+			  </BeginStoryboard>
+			 </EventTrigger>
+			 <EventTrigger RoutedEvent="Unchecked">
+			  <BeginStoryboard>
+				<Storyboard>
+				 <ColorAnimation Name="toggleUncheckedAni" Storyboard.TargetName="Border" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="White" Duration="0:0:0.1" />
+				 <ThicknessAnimation Name="toggleUncheckedAniThi" Storyboard.TargetName="Ellipse" Storyboard.TargetProperty="Margin" To="2 1 2 1" Duration="0:0:0.1" />
+				</Storyboard>
+			  </BeginStoryboard>
+			  </EventTrigger>
+			</ControlTemplate.Triggers>
+		   </ControlTemplate>
+		  </Setter.Value>
+	     </Setter>
         </Style>
      </Window.Resources>
 
@@ -164,12 +203,14 @@ Add-Type -AssemblyName presentationframework, presentationcore      # Add these 
       </GroupBox> <!---->
 
    
-    <GroupBox Header="Type your SQL query in the box below" Name="sqlTxtGrpBox" Margin="10" Padding="10"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Visibility="Hidden" >
+    <GroupBox Header="Type your SQL text in the box below" Name="sqlTxtGrpBox" Margin="10" Padding="10"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Visibility="Hidden" >
         <StackPanel>
-        <TextBlock>SQL query. Delete the example below and replace with your query:</TextBlock>
-        <TextBox Name="sqlTxtBox1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="200"/> 
-        <Button Name="sqlGoButton" HorizontalAlignment="Right" Margin="0,20,310,0">Go</Button>
-        <Button Name="sqlStopButton" HorizontalAlignment="Right" Margin="0,-32,145,0" IsEnabled="false">Stop</Button>    
+        <TextBlock Name="sqlTxtGrpBlock">SQL query. Delete the example below and replace with your query:</TextBlock>
+        <TextBox Name="sqlTxtBox1" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="200"/>
+        <ToggleButton Name="myToggleButton" Width = "143" Height ="32" HorizontalAlignment="Left" Margin="110,20,620,0" />
+        <Label Name="sqlExeLabel" Content="Execute a query" HorizontalAlignment="Left" Margin="0,-31,550,0" VerticalAlignment="Top"/>                
+        <Button Name="sqlGoButton" HorizontalAlignment="Right" Margin="0,-32,310,0">Go</Button>
+        <Button Name="sqlStopButton" HorizontalAlignment="Right" Margin="0,-33,145,0" IsEnabled="false">Stop</Button>    
         </StackPanel>
     </GroupBox>
 
@@ -180,7 +221,7 @@ Add-Type -AssemblyName presentationframework, presentationcore      # Add these 
         </Grid>
     </GroupBox>
 
-    <StackPanel Name="buttonCancelStackPanel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Orientation="Horizontal" >            
+    <StackPanel Name="buttonCancelStackPanel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Orientation="Horizontal" > 
             <Button Name="myButton3" IsEnabled="False" Content="Back"  />
             <Button Name="myButton1" Content="Next"  />
             <Button Name="myCancelButton" Content="Cancel" />
@@ -190,6 +231,7 @@ Add-Type -AssemblyName presentationframework, presentationcore      # Add these 
 "@
 
 #------------------[ Functions ]------------------------------------------------------#
+
 #######################################################################################
 #     Function to close other runspaces. Not the runspace that executes the GUI       #
 #######################################################################################
@@ -330,7 +372,7 @@ function Get-CucmSqlResult
 {
 
     #param ($sqlQueryToExe, $axlFileLocation, $cucmCreds, $cucmUrl)
-    param ($sqlToExec, $axlPath, $cucmSubIpAddr, $creds)
+    param ($sqlToExec, $axlPath, $cucmSubIpAddr, $creds, $queryOrUpdate = "executeSQLQuery")
     $AXL = New-WebServiceProxy -Uri $axlPath -Credential $creds
 
     # Create An empty array in the sync hash table to store the HTTP returned table values
@@ -344,15 +386,17 @@ function Get-CucmSqlResult
     $AXL.Url = $cucmSubIpAddr
 
     # Set a new SQL object use namesspace to avoid conficts
-    $SQLstr = New-Object ($ns + ".ExecuteSQLQueryReq")
+    # The method is not case sensative i.e executeSQLQueryReq
+    # or ExecuteSQLQueryReq will do
+    $SQLstr = New-Object ($ns + "." + $queryOrUpdate + "Req")
     
     # Set the SQL query string for the object
     $SQLstr.sql = $sqlToExec 
 
     try
     {
-        # Now invoke the sending of the SQL query, store the entire result in variable $httpResponse
-        $httpResponse = $AXL.executeSQLQuery($SQLstr)
+        # Now invoke the sending of the SQL query or update, store the entire result in variable $httpResponse
+        $httpResponse = $AXL.$queryOrUpdate($SQLstr)
         
         # Forma the results into a table, line by line
         foreach ($row in $httpResponse.return)
@@ -360,7 +404,14 @@ function Get-CucmSqlResult
             $resultsObj = New-Object System.Object
             foreach ($element in $row)
             {
-                $resultsObj | Add-Member -type NoteProperty -name $element.Name.ToString() -Value $element.InnerText.ToString()
+                if ($queryOrUpdate -eq "executeSQLQuery")
+                {
+                    $resultsObj | Add-Member -type NoteProperty -name $element.Name.ToString() -Value $element.InnerText.ToString()
+                }
+                else
+                {
+                    $resultsObj | Add-Member -type NoteProperty -name $element.PSObject.Properties.Name -Value $element.rowsUpdated.ToString()
+                }
             }
             $syncHashTable.resultsArray += $resultsObj # Store the results in the sync hash table. Can be accessed by all runspaces
         }
@@ -407,6 +458,41 @@ $namedNodes | ForEach-Object {$syncHashTable.Add($_.Name, $myGuiForm.FindName($_
 $syncHashTable.menuItemAbout.Add_Click({
         #Show the help synopsis in a GUI
         Get-Help "$global:scriptPath\$global:scriptName" -ShowWindow
+})
+
+#######################################################################################
+#            This code runs when the query/update slider is toggled                   #
+#######################################################################################
+
+$syncHashTable.myToggleButton.Add_Click({
+        # A sql update. Warn user of the dangers
+        if ($syncHashTable.myToggleButton.IsChecked){
+
+            $syncHashTable.sqlExeLabel.Foreground = "Red"
+            $syncHashTable.sqlExeLabel.Content = "Execute an update"
+            $syncHashTable.sqlTxtGrpBlock.Text = "SQL update. Delete the example below and replace with your update:"
+            $syncHashTable.sqlTxtBox1.Foreground = "#FFFFFFFF"
+            $syncHashTable.sqlTxtBox1.Background = "#FFEB4034"
+
+            # Pop up a warning about directly updating the CUCM datadbase
+            [System.Windows.MessageBox]::Show(
+                "PLEASE BE CAREFULL WHEN`nUPDATING THE CUCM DATABASE!!",
+                "SQL Query CUCM AXL database",
+                "Ok",
+                "Stop"
+            )
+
+
+        }
+
+        # Not a sql update must be a plain old query
+        else{
+            $syncHashTable.sqlExeLabel.Foreground = "Black"
+            $syncHashTable.sqlExeLabel.Content = "Execute a query"
+            $syncHashTable.sqlTxtGrpBlock.Text = "SQL query. Delete the example below and replace with your query:"
+            $syncHashTable.sqlTxtBox1.Foreground = "#FF000000"
+            $syncHashTable.sqlTxtBox1.Background = "#FFB8B8B8"
+        } 
 })
 
 #######################################################################################
@@ -501,18 +587,37 @@ $syncHashTable.sqlGoButton.Add_Click({
        # Check for presence of the AXLAPI in the same folder as this script
        if (checkForAxl)
        {       
-            $paramList = @{
+            # Is this a sql update?
+            if ($syncHashTable.myToggleButton.IsChecked){
+
+                $paramList = @{
+                sqlToExec = $sqlQueryToExe
+                axlPath = $("$global:scriptPath" + "\AXLAPI.wsdl")
+                cucmSubIpAddr = $global:cucmUrl
+                creds = $global:myCreds
+                queryOrUpdate = "executeSQLUpdate"
+                }
+
+                #Get-CucmSqlResult $sqlQueryToExe $("$global:scriptPath" + "\AXLAPI.wsdl") $global:myCreds $global:cucmUrl
+                #Start-NewRunspace -sqlToExec $sqlQueryToExe -axlPath $("$global:scriptPath" + "\AXLAPI.wsdl") -cucmSubIpAddr $global:cucmUrl -creds $global:myCreds -codeToExec "Get-CucmSqlResult"
+                Start-NewRunspace -paramList $paramList -codeToExec "Get-CucmSqlResult"
+
+            }
+
+            # If not a sql update must be a plain old query. Omit the queryOrUpdate parameter 
+            else{
+                $paramList = @{
                 sqlToExec = $sqlQueryToExe
                 axlPath = $("$global:scriptPath" + "\AXLAPI.wsdl")
                 cucmSubIpAddr = $global:cucmUrl
                 creds = $global:myCreds
                 }
 
-            #Get-CucmSqlResult $sqlQueryToExe $("$global:scriptPath" + "\AXLAPI.wsdl") $global:myCreds $global:cucmUrl
-            #Start-NewRunspace -sqlToExec $sqlQueryToExe -axlPath $("$global:scriptPath" + "\AXLAPI.wsdl") -cucmSubIpAddr $global:cucmUrl -creds $global:myCreds -codeToExec "Get-CucmSqlResult"
-            Start-NewRunspace -paramList $paramList -codeToExec "Get-CucmSqlResult"
-       }
-   
+                #Get-CucmSqlResult $sqlQueryToExe $("$global:scriptPath" + "\AXLAPI.wsdl") $global:myCreds $global:cucmUrl
+                #Start-NewRunspace -sqlToExec $sqlQueryToExe -axlPath $("$global:scriptPath" + "\AXLAPI.wsdl") -cucmSubIpAddr $global:cucmUrl -creds $global:myCreds -codeToExec "Get-CucmSqlResult"
+                Start-NewRunspace -paramList $paramList -codeToExec "Get-CucmSqlResult"
+            }            
+       }   
  })
 
 #######################################################################################
