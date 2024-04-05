@@ -13,7 +13,7 @@ Once the query completes click `File->Save As`, to save the result.
 The file `sqlExamples.txt` is just a collection of example SQL querys ripped from the internet.
 ### Screenshot
 
-![Figure 1 - CUCM SQL Query screen shot](/./cucmsqlquery.png "PowerShell Script screenshot")
+![Figure 1 - CUCM SQL Query screen shot](/./cucmsqlqueryV1_1.png "PowerShell Script screenshot")
 
 ## Installation
 
