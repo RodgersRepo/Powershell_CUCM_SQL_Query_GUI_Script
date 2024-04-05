@@ -1,6 +1,6 @@
-# Powershell CUCM SQL Query GUI script 
+# Powershell CUCM SQL Query/Update GUI script 
 
-This PowerShell script will send a SQL query to CUCM over HTTPS. It uses the AXLAPI wsdl that you must first download from your version of CUCM. See [Installation](#Installation) section of this README.
+This PowerShell script will send a SQL query or an update to CUCM over HTTPS. It uses the AXLAPI wsdl that you must first download from your version of CUCM. See [Installation](#Installation) section of this README. Toggle the slider to change from a query to an update. You will recieve a pop up warning when selecting 'update'.
 
 You will need to alter the script variable `$global:cucmUrl` to equal the IP address or FQDN of your CUCM server. If your enterprise has a functioning PKI you will probably want to use the FQDN. You may also want to remove the `trust_all_policy` include line from the script. You only need this if you are using self signed certificates.
 
