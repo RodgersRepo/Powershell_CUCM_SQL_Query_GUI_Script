@@ -46,6 +46,8 @@ This script uses runspaces in an attempt to stop the GUI freezing when a long ru
 Thanks to GitHub user dstaudt for the certificate overide routine.
 #### [Utilizing Runspaces for Responsive WPF GUI Applications](https://smsagent.blog/2015/09/07/powershell-tip-utilizing-runspaces-for-responsive-wpf-gui-applications/)
 Thanks to Trevor Jones for the runspaces examples.
+#### [Slider On/Off Switch in WPF](https://stackoverflow.com/questions/865767/slider-on-off-switch-in-wpf)
+Thanks to StackOverFlow member arconaut for the XAML Toggle slider.
 
 Check the comments within the script for more credits.
 
