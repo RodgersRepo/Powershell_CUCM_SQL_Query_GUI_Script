@@ -37,3 +37,16 @@ INNER JOIN CERTIFICATESERVICECERTIFICATEMAP ON CERTIFICATESERVICECERTIFICATEMAP.
 JOIN TYPECERTIFICATESERVICE ON TYPECERTIFICATESERVICE.enum=CERTIFICATESERVICECERTIFICATEMAP.tkcertificateservice
 ORDER BY CERTIFICATEPROCESSNODEMAP.servername
 
+# Endpoints count, with load defaults and default signalling protocol. Endpoint default protocols are 11=SIP, 0=SCCP, 99=Media Resource
+# taken from
+# https://nocthoughts.com/2019/06/21/pulling-device-defaults-like-a-pro.html
+SELECT COUNT(d.tkmodel), tp.name, defaults.tkdeviceprotocol AS SignalingProtocol, defaults.loadinformation AS DeviceDefault, d.tkmodel AS tkmodel
+FROM device AS d
+INNER JOIN typeproduct AS tp ON d.tkmodel=tp.tkmodel
+INNER JOIN defaults AS defaults ON tp.tkmodel=defaults.tkmodel
+WHERE d.name LIKE '%'
+AND defaults.loadinformation != ''
+GROUP BY d.tkmodel, tp.name, defaults.loadinformation, defaults.tkdeviceprotocol
+
+
+
