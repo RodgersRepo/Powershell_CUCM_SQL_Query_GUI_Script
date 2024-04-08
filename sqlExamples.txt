@@ -48,5 +48,13 @@ WHERE d.name LIKE '%'
 AND defaults.loadinformation != ''
 GROUP BY d.tkmodel, tp.name, defaults.loadinformation, defaults.tkdeviceprotocol
 
+# Based on the above endpoint query. If you have ever looked at the TFTP load file XMLDefault.cnf.xml
+# and wondered where the load information number comes from, it seems to be tkmodel.
+# the following pulls out this value (tkmodel) for DX type endpoints registered to your CUCM
+# Change the description to get other load numbers from registered devices
+SELECT description, tkmodel
+FROM device 
+WHERE description LIKE '%DX%'
+
 
 
