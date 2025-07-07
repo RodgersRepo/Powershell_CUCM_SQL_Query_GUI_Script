@@ -56,5 +56,16 @@ SELECT description, tkmodel
 FROM device 
 WHERE description LIKE '%DX%'
 
-
+# Last succesful login time in Epoch format.
+# Where user logs in with a PIN cr.tkcredential=3
+# other login types are 1 = Windows (not used), 2 = Domino (not used), 3 = Password, 4 = PIN
+# Taken from:
+# https://community.cisco.com/t5/unified-communications-infrastructure/jabber-report/td-p/2957556
+SELECT e.userid, e.firstname,e.lastname, cd.timelastaccessed, cd.lastsuccessfulloginip, cd. lastsuccessfullogintime
+FROM enduser AS e, credentialdynamic AS cd, credential AS cr
+WHERE e.pkid=cr.fkenduser
+AND e.tkuserprofile=1
+AND cr.tkcredential=3
+AND cr.pkid=cd.fkcredential
+ORDER BY e.userid
 
