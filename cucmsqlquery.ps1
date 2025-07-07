@@ -3,9 +3,9 @@
   Name: cucmsqlquery.ps1
   Will send a SQL query to the CUCM Administrative XML service (AXL)
   via HTTPS. The results table can be exported as a CSV file.
-  Before you begin download and save the WSDL file from CUCM to the same
-  folder where this script is saved. From CUCM admin navigate to.
-  Application\Plugin. Click the Downlod link next to Cisco AXL toolkit.
+  Before you begin download, save, then extract the Cisco AXL toolkit file
+  from CUCM to the same folder where this script is saved. From CUCM admin
+  navigate to.   Application\Plugin. Click the Downlod link next to Cisco AXL toolkit.
   Press the Next button to enter your CUCM credentials. When the form
   loads type your SQL query in the top text box then press GO.
   Table names for your querys can be found here.
@@ -188,7 +188,7 @@ Add-Type -AssemblyName presentationframework, presentationcore      # Add these 
                 <TextBlock Name="instructionsTxtBlk" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center">
                     This script will send a SQL query to the CUCM Administrative XML service (AXL)
                     via HTTPS. The results table can be exported as a CSV file.<LineBreak />
-                    Before you begin, download and save the WSDL file from CUCM to the same
+                    Before you begin, download, save, then extract the Cisco AXL toolkit file from CUCM to the same
                     folder where this script is saved. From CUCM admin navigate to.<LineBreak />                    
                     <Bold>Application-&gt;Plugin</Bold>. Click the <Bold>Download</Bold> link next to Cisco AXL toolkit.<LineBreak /><LineBreak />
                     Your user credentials must have the <Bold>Standard AXL API</Bold> role to be able to execute AXL requests. 
